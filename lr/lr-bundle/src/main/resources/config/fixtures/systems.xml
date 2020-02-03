@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--
+    Use this file to override the default configuration of the pre-defined system beans or to define your own.
+    -->
+
+    <!-- Use lifespan "PROVIDED"   if you want to start the systems manually   -->
+    <!-- Use lifespan "SUITE"      if you want Peel to deploy to start them once per suite (default for storage systems) -->
+    <!-- Use lifespan "EXPERIMENT" if you want Peel to deploy to start them once per experiment (default for all other systems) -->
+    <!-- Use lifespan "RUN"        if you want Peel to deploy to start them for each experiment run -->
+
+    <!--************************************************************************
+    * Overridden system beans
+    *************************************************************************-->
+
+    <bean id="flink-yarn-1.7.0" class="org.peelframework.flink.beans.system.FlinkYarnSession" parent="system">
+        <constructor-arg name="version" value="1.7.0" />
+        <constructor-arg name="configKey" value="flink" />
+        <constructor-arg name="lifespan" value="EXPERIMENT"/>
+        <constructor-arg name="dependencies">
+            <set value-type="org.peelframework.core.beans.system.System">
+                <ref bean="hdfs-3.1.1"/>
+                <ref bean="yarn-3.1.1"/>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="flink-1.7.0" class="org.peelframework.flink.beans.system.FlinkStandaloneCluster" parent="system">
+        <constructor-arg name="version" value="1.7.0" />
+        <constructor-arg name="configKey" value="flink" />
+        <constructor-arg name="lifespan" value="EXPERIMENT"/>
+        <constructor-arg name="dependencies">
+            <set value-type="org.peelframework.core.beans.system.System">
+                <ref bean="hdfs-3.1.1"/>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="flink-yarn-1.9.1" class="org.peelframework.flink.beans.system.FlinkYarnSession" parent="system">
+        <constructor-arg name="version" value="1.7.0" /> <!-- version 1.7.0 hack to generate the log4j-yarn-session.properties -->
+        <constructor-arg name="configKey" value="flink" />
+        <constructor-arg name="lifespan" value="EXPERIMENT"/>
+        <constructor-arg name="dependencies">
+            <set value-type="org.peelframework.core.beans.system.System">
+                <ref bean="yarn-3.1.1"/>
+                <ref bean="hdfs-3.1.1"/>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="flink-1.9.1" class="org.peelframework.flink.beans.system.FlinkStandaloneCluster" parent="system">
+        <constructor-arg name="version" value="1.9.1" />
+        <constructor-arg name="configKey" value="flink" />
+        <constructor-arg name="lifespan" value="EXPERIMENT"/>
+        <constructor-arg name="dependencies">
+            <set value-type="org.peelframework.core.beans.system.System">
+                <ref bean="hdfs-3.1.1"/>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <!--************************************************************************
+    * Custom system beans
+    *************************************************************************-->
+
+    <bean id="e2data-yarn-3.1.1" class="org.peelframework.hadoop.beans.system.Yarn3">
+        <constructor-arg name="version" value="3.1.1" />
+        <constructor-arg name="configKey" value="hadoop-3" />
+        <constructor-arg name="lifespan" value="SUITE" />
+        <constructor-arg name="mc" ref="mc"/>
+        <constructor-arg name="dependencies">
+            <set value-type="org.peelframework.core.beans.system.System" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="e2data-hdfs-3.1.1" class="org.peelframework.hadoop.beans.system.HDFS3">
+        <constructor-arg name="version" value="3.1.1" />
+        <constructor-arg name="configKey" value="hadoop-3" />
+        <constructor-arg name="lifespan" value="SUITE" />
+        <constructor-arg name="mc" ref="mc"/>
+        <constructor-arg name="dependencies">
+            <set value-type="org.peelframework.core.beans.system.System" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="e2data-flink-1.7.0" class="org.peelframework.flink.beans.system.FlinkStandaloneCluster" parent="system">
+        <constructor-arg name="version" value="1.7.0" />
+        <constructor-arg name="configKey" value="flink" />
+        <constructor-arg name="lifespan" value="EXPERIMENT"/>
+        <constructor-arg name="dependencies">
+            <set value-type="org.peelframework.core.beans.system.System" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="e2data-flink-yarn-1.7.0" class="org.peelframework.flink.beans.system.FlinkYarnSession" parent="system">
+        <constructor-arg name="version" value="1.7.0" />
+        <constructor-arg name="configKey" value="flink" />
+        <constructor-arg name="lifespan" value="EXPERIMENT"/>
+        <constructor-arg name="dependencies">
+            <set value-type="org.peelframework.core.beans.system.System">
+                <ref bean="e2data-hdfs-3.1.1"/>
+                <ref bean="e2data-yarn-3.1.1"/>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <!--************************************************************************
+    * Base experiments beans
+    *************************************************************************-->
+
+    <bean id="experiment.flink-1.9.1" class="org.peelframework.flink.beans.experiment.FlinkExperiment" abstract="true">
+        <constructor-arg name="runner" ref="flink-yarn-1.9.1"/>
+        <constructor-arg name="runs" value="3"/>
+    </bean>
+
+    <bean id="experiment.flink-1.7.0" class="org.peelframework.flink.beans.experiment.FlinkExperiment" abstract="true">
+        <constructor-arg name="runner" ref="flink-yarn-1.7.0"/>
+        <constructor-arg name="runs" value="3"/>
+    </bean>
+
+    <bean id="experiment.flink-standalone-1.9.1" class="org.peelframework.flink.beans.experiment.FlinkExperiment" abstract="true">
+        <constructor-arg name="runner" ref="flink-1.9.1"/>
+        <constructor-arg name="runs" value="3"/>
+    </bean>
+
+    <bean id="experiment.e2data-flink-1.7.0" class="org.peelframework.flink.beans.experiment.FlinkExperiment" abstract="true">
+        <constructor-arg name="runner" ref="e2data-flink-yarn-1.7.0"/>
+        <constructor-arg name="runs" value="3"/>
+    </bean>
+
+    <bean id="experiment.flink-standalone-1.7.0" class="org.peelframework.flink.beans.experiment.FlinkExperiment" abstract="true">
+        <constructor-arg name="runner" ref="flink-1.7.0"/>
+        <constructor-arg name="runs" value="3"/>
+    </bean>
+
+</beans>
