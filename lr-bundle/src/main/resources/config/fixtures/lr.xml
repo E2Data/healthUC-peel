@@ -86,7 +86,7 @@
     </bean>
 
     <!-- suite for KALEAO -->
-    <bean id="lr.scale-out" class="org.peelframework.core.beans.experiment.ExperimentSuite">
+    <bean id="lr.kmax.scale-out" class="org.peelframework.core.beans.experiment.ExperimentSuite">
         <constructor-arg name="experiments">
             <bean class="org.peelframework.core.beans.experiment.ExperimentSequence">
                 <constructor-arg name="paramName" value="topXXX-X"/>
@@ -107,6 +107,50 @@
                         <value>top016-1</value>
                         <value>top016-2</value>
                         <value>top016-4</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg name="prototypes">
+                    <list value-type="org.peelframework.core.beans.experiment.Experiment">
+                        <bean parent="experiment.lr">
+                            <constructor-arg name="name" value="lr.__topXXX-X__"/>
+                            <constructor-arg name="config">
+                                <value><![CDATA[
+                                  system.default.config.slaves                           = ${env.scale-out.__topXXX-X__.workers}
+                                  system.flink.config.yaml.taskmanager.numberOfTaskSlots = ${env.scale-out.__topXXX-X__.parallelism.per-node}
+                                  system.flink.config.yaml.parallelism.default           = ${env.scale-out.__topXXX-X__.parallelism.total}
+                                ]]></value>
+                            </constructor-arg>
+                        </bean>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+
+    </bean>
+
+    <!-- suite for ICCS -->
+    <bean id="lr.iccs.scale-out" class="org.peelframework.core.beans.experiment.ExperimentSuite">
+        <constructor-arg name="experiments">
+            <bean class="org.peelframework.core.beans.experiment.ExperimentSequence">
+                <constructor-arg name="paramName" value="topXXX-X"/>
+                <constructor-arg name="paramVals">
+                    <list>
+                        <value>top001-1</value>
+                        <value>top001-2</value>
+                        <value>top001-4</value>
+                        <value>top001-8</value>
+                        <value>top002-1</value>
+                        <value>top002-2</value>
+                        <value>top002-4</value>
+                        <value>top002-8</value>
+                        <value>top004-1</value>
+                        <value>top004-2</value>
+                        <value>top004-4</value>
+                        <value>top004-8</value>
+                        <value>top008-1</value>
+                        <value>top008-2</value>
+                        <value>top008-4</value>
+                        <value>top008-8</value>
                     </list>
                 </constructor-arg>
                 <constructor-arg name="prototypes">
