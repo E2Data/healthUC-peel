@@ -1,0 +1,9 @@
+# IntelliJ
+.idea
+*.iml
+
+# VIM swap files
+*.swp
+
+# Generated files
+target

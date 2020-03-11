@@ -1,7 +1,4 @@
-# healthUC-peel
+# peel-wordcount
 
-Kaleao:
-./peel.sh suite:run lr.scale-out
-
-Local:
-./peel.sh suite:run lr.deafault
+This is just a dummy README file.
+See the [Peel Manual](http://peel-framework.org/manual) for more information how to build and run the experiments bundled in this package.
