@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.flink.examples.java.clustering;
+package eu.e2data.exus_use_case;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;

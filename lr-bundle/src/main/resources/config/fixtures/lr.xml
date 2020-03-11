@@ -22,7 +22,7 @@
     <bean id="experiment.lr" parent="experiment.flink-1.9.1" abstract="true">
         <constructor-arg name="command">
             <value><![CDATA[
-              -v -c org.apache.flink.examples.java.exus_use_case.LR  \
+              -v -c eu.e2data.exus_use_case.LR  \
               ${app.path.apps}/lr-flink-jobs-1.0-SNAPSHOT.jar \
               --train ${system.hadoop-3.path.input}/dataset_train.csv \
               --test ${system.hadoop-3.path.input}/dataset_test.csv\
