@@ -131,7 +131,7 @@ public class LR {
 					.writeAsText(params.get("output"), FileSystem.WriteMode.OVERWRITE);
 
 			// since file sinks are lazy, we trigger the execution explicitly
-			env.execute("KMeans Example");
+			env.execute("Exus Use Case");
 		} else {
 			System.out.println("Printing result to stdout. Use --output to specify output path.");
 			results.print();
