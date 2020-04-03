@@ -46,6 +46,7 @@
             <set value-type="org.peelframework.core.beans.system.System">
                 <ref bean="yarn-3.1.1"/>
                 <ref bean="hdfs-3.1.1"/>
+                <ref bean="dstat-0.7.3"/>
             </set>
         </constructor-arg>
     </bean>
