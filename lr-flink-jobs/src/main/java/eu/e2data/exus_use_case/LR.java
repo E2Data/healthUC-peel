@@ -214,7 +214,6 @@ public class LR {
 				this.parameter = p;
 			}
 
-			double[] theta = new double[n + 1];
 			double z = 0.0;
 			for (int j = 0; j < n + 1; j++) {
 				z += in.X[j] * parameter.W[j];
@@ -223,12 +222,10 @@ public class LR {
 			double error = (double) 1 / (1 + Math.exp(-z)) - in.y;
 
 			for (int j = 0; j < n + 1; j++) {
-
-				theta[j] = parameter.W[j] - lr * (error * in.X[j]);
+				in.X[j] = parameter.W[j] - lr * (error * in.X[j]);
 			}
 
-
-			return new Tuple2<>(new Params(theta, n), count);
+			return new Tuple2<>(new Params(in.X, n), count);
 
 		}
 	}
@@ -299,12 +296,10 @@ public class LR {
 		@Override
 		public Tuple2<Params, Integer> reduce(Tuple2<Params, Integer> val1, Tuple2<Params, Integer> val2) {
 
-			double[] newTheta = new double[n + 1];
 			for (int j = 0; j < n + 1; j++) {
-				newTheta[j] = val1.f0.W[j] + val2.f0.W[j];
+				val1.f0.W[j] = val1.f0.W[j] + val2.f0.W[j];
 			}
-			Params result = new Params(newTheta, n);
-			return new Tuple2<>(result, val1.f1 + val2.f1);
+			return new Tuple2<>(val1.f0, val1.f1 + val2.f1);
 
 		}
 	}
