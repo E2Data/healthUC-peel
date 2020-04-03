@@ -32,8 +32,8 @@
         </constructor-arg>
         <constructor-arg name="inputs">
             <set>
-                <ref bean="dataset.lr.static.points" />
-                <ref bean="dataset.lr.static.centers" />
+                <ref bean="dataset.lr.static.training.small" />
+                <ref bean="dataset.lr.static.test" />
             </set>
         </constructor-arg>
         <constructor-arg name="outputs">
@@ -48,13 +48,19 @@
     * Inputs
     *************************************************************************-->
 
-    <bean id="dataset.lr.static.points" class="org.peelframework.core.beans.data.CopiedDataSet">
+    <bean id="dataset.lr.static.training.small" class="org.peelframework.core.beans.data.CopiedDataSet">
         <constructor-arg name="src" value="${app.path.datasets}/dataset_train.csv"/>
         <constructor-arg name="dst" value="${system.hadoop-3.path.input}/dataset_train.csv"/>
         <constructor-arg name="fs" ref="hdfs-3.1.1"/>
     </bean>
 
-    <bean id="dataset.lr.static.centers" class="org.peelframework.core.beans.data.CopiedDataSet">
+    <bean id="dataset.lr.static.training.big" class="org.peelframework.core.beans.data.CopiedDataSet">
+        <constructor-arg name="src" value="${app.path.datasets}/dataset_resampled.csv"/>
+        <constructor-arg name="dst" value="${system.hadoop-3.path.input}/dataset_resampled.csv"/>
+        <constructor-arg name="fs" ref="hdfs-3.1.1"/>
+    </bean>
+
+    <bean id="dataset.lr.static.test" class="org.peelframework.core.beans.data.CopiedDataSet">
         <constructor-arg name="src" value="${app.path.datasets}/dataset_test.csv"/>
         <constructor-arg name="dst" value="${system.hadoop-3.path.input}/dataset_test.csv"/>
         <constructor-arg name="fs" ref="hdfs-3.1.1"/>
