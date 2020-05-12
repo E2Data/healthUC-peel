@@ -209,7 +209,7 @@ public class LR {
 		@Override
 		public Tuple2<Params, Integer> map(Data in) {
 
-
+			// TODO: Could this be moved out of the map function?
 			for (Params p : parameters) {
 				this.parameter = p;
 			}
@@ -256,6 +256,7 @@ public class LR {
 		@Override
 		public Tuple4<Integer, Integer, Integer, Integer> map(Data in) {
 
+			// TODO: Could this be moved out of the map function?
 			for (Params p : parameters) {
 				this.parameter = p;
 			}
