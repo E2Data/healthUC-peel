@@ -78,7 +78,7 @@ public class LRBinary {
 				TypeInformation.of(Data.class));
 
 		//read binary training data
-		DataSet<Data> data = env.readFile(inputFormat, params.get("binar"));
+		DataSet<Data> data = env.readFile(inputFormat, params.get("binary"));
 		//Initialize W and b
 		DataSet<Params> parameters = env.fromElements(new Params(new double[numberOfFeatures + 1], numberOfFeatures));
 
