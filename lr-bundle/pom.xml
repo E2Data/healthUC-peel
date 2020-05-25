@@ -34,13 +34,9 @@
         <!-- bundle jars -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>lr-datagens</artifactId>
-        </dependency>
-<!--        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>lr-peelextensions</artifactId>
         </dependency>
--->        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>lr-flink-jobs</artifactId>
         </dependency>

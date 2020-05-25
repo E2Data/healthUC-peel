@@ -24,25 +24,25 @@
             <fileMode>0644</fileMode>
             <directoryMode>0755</directoryMode>
             <excludes>
-                <exclude>${project.parent.groupId}:${project.parent.artifactId}-datagens</exclude>
+<!--                <exclude>${project.parent.groupId}:${project.parent.artifactId}-datagens</exclude>-->
                 <exclude>${project.parent.groupId}:${project.parent.artifactId}-*-jobs</exclude>
                 <exclude>${project.parent.groupId}:${project.parent.artifactId}-*-apps</exclude>
             </excludes>
         </dependencySet>
         <!-- datagens -->
-        <dependencySet>
-            <outputDirectory>datagens</outputDirectory>
-            <unpack>false</unpack>
-            <useProjectArtifact>true</useProjectArtifact>
-            <useProjectAttachments>false</useProjectAttachments>
-            <useTransitiveDependencies>false</useTransitiveDependencies>
-            <useTransitiveFiltering>false</useTransitiveFiltering>
-            <fileMode>0644</fileMode>
-            <directoryMode>0755</directoryMode>
-            <includes>
-                <include>${project.parent.groupId}:${project.parent.artifactId}-datagens</include>
-            </includes>
-        </dependencySet>
+<!--        <dependencySet>-->
+<!--            <outputDirectory>datagens</outputDirectory>-->
+<!--            <unpack>false</unpack>-->
+<!--            <useProjectArtifact>true</useProjectArtifact>-->
+<!--            <useProjectAttachments>false</useProjectAttachments>-->
+<!--            <useTransitiveDependencies>false</useTransitiveDependencies>-->
+<!--            <useTransitiveFiltering>false</useTransitiveFiltering>-->
+<!--            <fileMode>0644</fileMode>-->
+<!--            <directoryMode>0755</directoryMode>-->
+<!--            <includes>-->
+<!--                <include>${project.parent.groupId}:${project.parent.artifactId}-datagens</include>-->
+<!--            </includes>-->
+<!--        </dependencySet>-->
         <!-- apps -->
         <dependencySet>
             <outputDirectory>apps</outputDirectory>
@@ -95,7 +95,11 @@
             <outputDirectory>utils</outputDirectory>
             <fileMode>0644</fileMode>
         </fileSet>
-
+        <fileSet>
+            <directory>src/main/resources/templates</directory>
+            <outputDirectory>templates</outputDirectory>
+            <fileMode>0644</fileMode>
+        </fileSet>
         <!-- create an empty log directory -->
         <fileSet>
             <directory>src/main/assembly</directory>
