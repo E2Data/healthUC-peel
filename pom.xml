@@ -9,7 +9,7 @@
 
     <modules>
         <module>lr-bundle</module>
-        <module>lr-peelextensions</module>
+<!--        <module>lr-peelextensions</module>-->
         <module>lr-flink-jobs</module>
     </modules>
 

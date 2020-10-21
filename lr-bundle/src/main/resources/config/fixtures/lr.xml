@@ -19,7 +19,7 @@
     *************************************************************************-->
 
     <!-- lr experiment with fixed dataset -->
-    <bean id="experiment.lr" parent="experiment.flink-1.9.1" abstract="true">
+    <bean id="experiment.lr" parent="experiment.flink-1.11.1" abstract="true">
         <constructor-arg name="command">
             <value><![CDATA[
               -v -c eu.e2data.exus_use_case.LRBinary  \

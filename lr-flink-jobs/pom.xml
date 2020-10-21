@@ -16,7 +16,7 @@
         <scala.tools.version>2.12</scala.tools.version>
 
         <!-- Flink -->
-        <flink.version>1.7.0</flink.version>
+        <flink.version>1.11.1</flink.version>
     </properties>
 
     <dependencies>
@@ -137,7 +137,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.apache.flink</groupId>
-                    <artifactId>flink-scala</artifactId>
+                    <artifactId>flink-scala_${scala.tools.version}</artifactId>
                     <version>${flink.version}</version>
                     <scope>compile</scope>
                 </dependency>
