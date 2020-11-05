@@ -7,12 +7,6 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <modules>
-        <module>lr-bundle</module>
-<!--        <module>lr-peelextensions</module>-->
-        <module>lr-flink-jobs</module>
-    </modules>
-
     <properties>
         <!-- Common -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,6 +41,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>lr-peelextensions</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>lr-datagens</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
@@ -166,5 +165,10 @@
             </plugins>
         </pluginManagement>
     </build>
-
+  <modules>
+    <module>lr-bundle</module>
+     <module>lr-peelextensions</module>
+    <module>lr-datagens</module>
+    <module>lr-flink-jobs</module>
+  </modules>
 </project>

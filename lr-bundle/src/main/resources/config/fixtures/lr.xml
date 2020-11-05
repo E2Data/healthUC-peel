@@ -14,26 +14,28 @@
          825436396 points = 10 GB text file ?
          33554432 points => 417M text file => 736 MB read from Flink DataSource => 3.28 GB processed in CHAIN Reduce => 15 minutes in one task slot
     -->
+
+
     <!--************************************************************************
     * Experiments
     *************************************************************************-->
 
     <!-- lr experiment with fixed dataset -->
-    <bean id="experiment.lr" parent="experiment.flink-1.11.1" abstract="true">
+    <bean id="experiment.lr" parent="experiment.flink-yarn-1.11.1" abstract="true">
         <constructor-arg name="command">
             <value><![CDATA[
               -v -c eu.e2data.exus_use_case.LRBinary  \
               ${app.path.apps}/lr-flink-jobs-1.0-SNAPSHOT.jar \
-              --train ${system.hadoop-3.path.input}/dataset_train.csv \
-              --binary ${system.hadoop-3.path.input}/dataset_train.dat \
+              --train ${system.hadoop-3.path.input}/dataset_resampled.csv \
+              --binary ${system.hadoop-3.path.input}/dataset_resampled.dat \
               --test ${system.hadoop-3.path.input}/dataset_test.csv\
               --output ${system.hadoop-3.path.output}/predictions.txt \
-              --iterations ${experiment.iterations}
+              --iterations 10
             ]]></value>
         </constructor-arg>
         <constructor-arg name="inputs">
             <set>
-                <ref bean="dataset.lr.static.training.small" />
+                <ref bean="dataset.lr.static.training.big" />
                 <ref bean="dataset.lr.static.test" />
             </set>
         </constructor-arg>
@@ -48,12 +50,6 @@
     <!--************************************************************************
     * Inputs
     *************************************************************************-->
-
-    <bean id="dataset.lr.static.training.small" class="org.peelframework.core.beans.data.CopiedDataSet">
-        <constructor-arg name="src" value="${app.path.datasets}/dataset_train.csv"/>
-        <constructor-arg name="dst" value="${system.hadoop-3.path.input}/dataset_train.csv"/>
-        <constructor-arg name="fs" ref="hdfs-3.1.1"/>
-    </bean>
 
     <bean id="dataset.lr.static.training.big" class="org.peelframework.core.beans.data.CopiedDataSet">
         <constructor-arg name="src" value="${app.path.datasets}/dataset_resampled.csv"/>
@@ -125,7 +121,6 @@
                                   system.default.config.slaves                           = ${env.scale-out.__topXXX-X__.workers}
                                   system.flink.config.yaml.taskmanager.numberOfTaskSlots = ${env.scale-out.__topXXX-X__.parallelism.per-node}
                                   system.flink.config.yaml.parallelism.default           = ${env.scale-out.__topXXX-X__.parallelism.total}
-                                  experiment.iterations                                  = 10
                                 ]]></value>
                             </constructor-arg>
                         </bean>
@@ -133,7 +128,6 @@
                 </constructor-arg>
             </bean>
         </constructor-arg>
-
     </bean>
 
     <!-- suite for ICCS -->
@@ -164,13 +158,65 @@
                 <constructor-arg name="prototypes">
                     <list value-type="org.peelframework.core.beans.experiment.Experiment">
                         <bean parent="experiment.lr">
+                            <constructor-arg name="name" value="gb.__topXXX-X__"/>
+                            <constructor-arg name="config">
+                                <value><![CDATA[
+                                  system.default.config.slaves                           = ${env.scale-out.__topXXX-X__.workers}
+                                  system.flink.config.yaml.taskmanager.numberOfTaskSlots = ${env.scale-out.__topXXX-X__.parallelism.per-node}
+                                  system.flink.config.yaml.parallelism.default           = ${env.scale-out.__topXXX-X__.parallelism.total}
+                                ]]></value>
+                            </constructor-arg>
+                        </bean>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <!-- suite for TU Berlin cloud-11 -->
+    <bean id="lr.cloud-11" class="org.peelframework.core.beans.experiment.ExperimentSuite">
+        <constructor-arg name="experiments">
+            <bean class="org.peelframework.core.beans.experiment.ExperimentSequence">
+                <constructor-arg name="paramName" value="topXXX-X"/>
+                <constructor-arg name="paramVals">
+                    <list>
+                        <value>top001-1</value>
+                        <value>top001-2</value>
+                        <value>top001-4</value>
+                        <value>top001-8</value>
+                        <value>top001-16</value>
+                        <value>top002-1</value>
+                        <value>top002-2</value>
+                        <value>top002-4</value>
+                        <value>top002-8</value>
+                        <value>top002-16</value>
+                        <value>top004-1</value>
+                        <value>top004-2</value>
+                        <value>top004-4</value>
+                        <value>top004-8</value>
+                        <value>top004-16</value>
+                        <value>top008-1</value>
+                        <value>top008-2</value>
+                        <value>top008-4</value>
+                        <value>top008-8</value>
+                        <value>top008-16</value>
+                        <value>top016-1</value>
+                        <value>top016-2</value>
+                        <value>top016-4</value>
+                        <value>top016-8</value>
+                        <value>top016-16</value>
+                        <value>top023-16</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg name="prototypes">
+                    <list value-type="org.peelframework.core.beans.experiment.Experiment">
+                        <bean parent="experiment.lr">
                             <constructor-arg name="name" value="lr.__topXXX-X__"/>
                             <constructor-arg name="config">
                                 <value><![CDATA[
                                   system.default.config.slaves                           = ${env.scale-out.__topXXX-X__.workers}
                                   system.flink.config.yaml.taskmanager.numberOfTaskSlots = ${env.scale-out.__topXXX-X__.parallelism.per-node}
                                   system.flink.config.yaml.parallelism.default           = ${env.scale-out.__topXXX-X__.parallelism.total}
-                                  experiment.iterations                                  = 10
                                 ]]></value>
                             </constructor-arg>
                         </bean>
@@ -178,45 +224,7 @@
                 </constructor-arg>
             </bean>
         </constructor-arg>
-    </bean>
 
-    <!-- suite to test iterations -->
-    <bean id="lr.iccs.iterations" class="org.peelframework.core.beans.experiment.ExperimentSuite">
-        <constructor-arg name="experiments">
-            <bean class="org.peelframework.core.beans.experiment.ExperimentSequence">
-                <constructor-arg name="paramName" value="iterations-XX"/>
-                <constructor-arg name="paramVals">
-                    <list>
-                        <value>iterations-01</value>
-                        <value>iterations-02</value>
-                        <value>iterations-03</value>
-                        <value>iterations-04</value>
-                        <value>iterations-05</value>
-                        <value>iterations-06</value>
-                        <value>iterations-07</value>
-                        <value>iterations-08</value>
-                        <value>iterations-09</value>
-                        <value>iterations-10</value>
-                    </list>
-                </constructor-arg>
-                <constructor-arg name="prototypes">
-                    <list value-type="org.peelframework.core.beans.experiment.Experiment">
-                        <bean parent="experiment.lr">
-                            <constructor-arg name="name" value="lr.__iterations-XX__"/>
-                            <constructor-arg name="config">
-                                <value><![CDATA[
-                                  system.default.config.slaves                           = ${env.iterations.workers}
-                                  system.flink.config.yaml.taskmanager.numberOfTaskSlots = ${env.iterations.parallelism.per-node}
-                                  system.flink.config.yaml.parallelism.default           = ${env.iterations.parallelism.total}
-                                  experiment.iterations                                  = ${env.iterations.__iterations-XX__.iterations}
-                                ]]></value>
-                            </constructor-arg>
-                        </bean>
-                    </list>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
     </bean>
-
 
 </beans>

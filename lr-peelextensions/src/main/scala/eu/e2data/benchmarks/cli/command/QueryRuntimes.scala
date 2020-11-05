@@ -1,4 +1,4 @@
-package eu.e2data.benchmarks.cli.command
+package eu.e2data.benchmarks.lr.cli.command
 
 import java.lang.{System => Sys}
 

@@ -25,6 +25,7 @@
         <!-- PostgreSQL driver -->
         <postgresql.version>9.4.1208</postgresql.version>
         <!-- bundle binaries parent folder -->
+        <!--suppress UnresolvedMavenProperty -->
         <bundle.bin>${env.BUNDLE_BIN}</bundle.bin>
         <!-- Assembly file path -->
         <assembly.descriptor>src/main/assembly/bundle.prod.xml</assembly.descriptor>
@@ -32,6 +33,10 @@
 
     <dependencies>
         <!-- bundle jars -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>lr-datagens</artifactId>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>lr-peelextensions</artifactId>

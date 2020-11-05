@@ -22,10 +22,5 @@
 
     <!-- experiment beans -->
     <import resource="fixtures/lr.xml"/>
-    <!--
-    <import resource="fixtures/pagerank.xml"/>
-    <import resource="fixtures/tpch.xml"/>
-    <import resource="fixtures/wordcount.xml"/>
-     -->
 
 </beans>
