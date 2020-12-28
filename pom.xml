@@ -45,11 +45,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>lr-datagens</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>lr-flink-jobs</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
@@ -168,7 +163,6 @@
   <modules>
     <module>lr-bundle</module>
      <module>lr-peelextensions</module>
-    <module>lr-datagens</module>
     <module>lr-flink-jobs</module>
   </modules>
 </project>

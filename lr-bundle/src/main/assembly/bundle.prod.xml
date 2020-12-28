@@ -71,6 +71,12 @@
             </includes>
         </fileSet>
 
+        <fileSet>
+            <directory>src/main/resources/templates</directory>
+            <outputDirectory>templates</outputDirectory>
+            <fileMode>0644</fileMode>
+        </fileSet>
+
         <!-- copy config directory -->
         <fileSet>
             <directory>src/main/resources/config</directory>
@@ -95,11 +101,7 @@
             <outputDirectory>utils</outputDirectory>
             <fileMode>0644</fileMode>
         </fileSet>
-        <fileSet>
-            <directory>src/main/resources/templates</directory>
-            <outputDirectory>templates</outputDirectory>
-            <fileMode>0644</fileMode>
-        </fileSet>
+
         <!-- create an empty log directory -->
         <fileSet>
             <directory>src/main/assembly</directory>

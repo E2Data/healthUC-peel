@@ -26,6 +26,7 @@ import org.apache.flink.api.common.io.FileInputFormat;
 import org.apache.flink.api.common.io.FileOutputFormat;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.DataSet;
+import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.io.TypeSerializerInputFormat;
 import org.apache.flink.api.java.io.TypeSerializerOutputFormat;
@@ -59,28 +60,26 @@ public class LRBinary {
 
 		//default params
 		int numberOfFeatures = 82;
-		double alpha = 0.1;
-		double lambda = 0.1;
 
 		// convert to binary
 		FileOutputFormat<Data>
 				of = new TypeSerializerOutputFormat<>();
 		env.readCsvFile(params.get("train")).fieldDelimiter("\t").ignoreFirstLine().types(String.class)
-		   .flatMap(new ConvertToIndexMatrix(numberOfFeatures))
-		   .write(of, params.get("binary"), FileSystem.WriteMode.OVERWRITE);
+				.flatMap(new ConvertToIndexMatrix())
+				.write(of, params.get("binary"), FileSystem.WriteMode.OVERWRITE);
 		env.execute();
 
-		System.out.println(String.format("Conversion runtime: %d ms", env.getLastJobExecutionResult()
-																		 .getNetRuntime(TimeUnit.MILLISECONDS)));
+//		System.out.println(String.format("Conversion runtime: %d ms", env.getLastJobExecutionResult()
+//				.getNetRuntime(TimeUnit.MILLISECONDS)));
 
 		// input formats
-		FileInputFormat<Data> inputFormat = new TypeSerializerInputFormat<Data>(
+		FileInputFormat<Data> inputFormat = new TypeSerializerInputFormat<>(
 				TypeInformation.of(Data.class));
 
 		//read binary training data
 		DataSet<Data> data = env.readFile(inputFormat, params.get("binary"));
 		//Initialize W and b
-		DataSet<Params> parameters = env.fromElements(new Params(new double[numberOfFeatures + 1], numberOfFeatures));
+		DataSet<Params> parameters = env.fromElements(new Params(new double[numberOfFeatures + 1]));
 
 		// set number of bulk iterations for KMeans algorithm
 		IterativeDataSet<Params> loop = parameters.iterate(params.getInt("iterations", 10));
@@ -88,7 +87,7 @@ public class LRBinary {
 		//train
 		DataSet<Params> newParameters = data
 				// compute a single step using every sample
-				.map(new SubUpdate(numberOfFeatures, alpha)).withBroadcastSet(loop, "parameters")
+				.map(new SubUpdate()).withBroadcastSet(loop, "parameters")
 				// sum up all the steps
 				.reduce(new UpdateAccumulator(numberOfFeatures))
 				// average the steps and update all parameters
@@ -100,28 +99,29 @@ public class LRBinary {
 		//read train data-set from csv
 		DataSet<Tuple1<String>> test_csv = env.readCsvFile(params.get("test")).fieldDelimiter("\t").ignoreFirstLine().types(String.class);
 		//convert to Data (X, y)
-		DataSet<Data> test_data = test_csv.flatMap(new ConvertToIndexMatrix(numberOfFeatures));
+		DataSet<Data> test_data = test_csv.flatMap(new ConvertToIndexMatrix());
 		//evaluate results
 		DataSet<String> results = test_data
-				.map(new Predict(numberOfFeatures)).withBroadcastSet(final_params, "params")
+				.map(new Predict()).withBroadcastSet(final_params, "params")
 				.reduce(new Evaluate())
 				.map(new ComputeMetrics());
 
 		// emit result
+		JobExecutionResult perf_res = null;
 		if (params.has("output")) {
 
 			results
 					.writeAsText(params.get("output"), FileSystem.WriteMode.OVERWRITE);
 
 			// since file sinks are lazy, we trigger the execution explicitly
-			env.execute("Exus Use Case");
+			perf_res = env.execute("Exus Use Case");
 		} else {
 			System.out.println("Printing result to stdout. Use --output to specify output path.");
 			results.print();
 		}
 
-		System.out.println(String.format("Job runtime: %d ms", env.getLastJobExecutionResult()
-																	 .getNetRuntime(TimeUnit.MILLISECONDS)));
+		System.out.println(String.format("LR Job runtime: %d ms", perf_res
+				.getNetRuntime(TimeUnit.MILLISECONDS)));
 
 	}
 
@@ -144,11 +144,10 @@ public class LRBinary {
 
 	static class Params {
 		double[] W;
-		private int n;
+		final int n = 82;
 
-		Params(double[] w, int n) {
+		Params(double[] w) {
 			W = w;
-			this.n = n;
 		}
 
 		public Params div(Integer a) {
@@ -162,11 +161,7 @@ public class LRBinary {
 
 	public static class ConvertToIndexMatrix implements FlatMapFunction<Tuple1<String>, Data> {
 
-		private int n;
-
-		ConvertToIndexMatrix(int n) {
-			this.n = n;
-		}
+		final int n = 82;
 
 
 		@Override
@@ -179,10 +174,10 @@ public class LRBinary {
 
 				//when col is -1 , then take the row number , else collect values
 				if (col > -1 && col < n) {
-					X[col] = cell != null ? Double.valueOf(cell) : 0.0;
+					X[col] = cell != null ? Double.parseDouble(cell) : 0.0;
 				} else if (col == n) {
 					X[col] = 1.0;
-					y = Double.valueOf(cell);
+					y = Double.parseDouble(cell);
 				}
 				col++;
 			}
@@ -204,19 +199,13 @@ public class LRBinary {
 	 */
 	public static class SubUpdate extends RichMapFunction<Data, Tuple2<Params, Integer>> {
 
-		private Collection<Params> parameters;
+		Collection<Params> parameters;
 
-		private Params parameter;
+		int count = 1;
 
-		private int count = 1;
+		final int n = 82;
+		final double lr = 0.1;
 
-		private int n;
-		private double lr;
-
-		SubUpdate(int n, double lr) {
-			this.n = n;
-			this.lr = lr;
-		}
 
 		/**
 		 * Reads the parameters from a broadcast variable into a collection.
@@ -229,10 +218,7 @@ public class LRBinary {
 		@Override
 		public Tuple2<Params, Integer> map(Data in) {
 
-			// TODO: Could this be moved out of the map function?
-			for (Params p : parameters) {
-				this.parameter = p;
-			}
+			Params parameter = this.parameters.iterator().next();
 
 			double z = 0.0;
 			for (int j = 0; j < n + 1; j++) {
@@ -245,7 +231,7 @@ public class LRBinary {
 				in.X[j] = parameter.W[j] - lr * (error * in.X[j]);
 			}
 
-			return new Tuple2<>(new Params(in.X, n), count);
+			return new Tuple2<>(new Params(in.X), count);
 
 		}
 	}
@@ -255,15 +241,12 @@ public class LRBinary {
 	 */
 	public static class Predict extends RichMapFunction<Data, Tuple4<Integer, Integer, Integer, Integer>> {
 
-		private Collection<Params> parameters;
+		Collection<Params> parameters;
 
-		private Params parameter;
+		Params parameter;
 
-		private int n;
+		final int n = 82;
 
-		Predict(int n) {
-			this.n = n;
-		}
 
 		/**
 		 * Reads the parameters from a broadcast variable into a collection.
@@ -276,10 +259,7 @@ public class LRBinary {
 		@Override
 		public Tuple4<Integer, Integer, Integer, Integer> map(Data in) {
 
-			// TODO: Could this be moved out of the map function?
-			for (Params p : parameters) {
-				this.parameter = p;
-			}
+			this.parameter = this.parameters.iterator().next();
 
 			double z = 0.0;
 			for (int j = 0; j < n + 1; j++) {

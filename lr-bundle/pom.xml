@@ -35,10 +35,6 @@
         <!-- bundle jars -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>lr-datagens</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>lr-peelextensions</artifactId>
         </dependency>
         <dependency>
@@ -131,6 +127,7 @@
             <properties>
                 <!-- Assembly file path (assemble without the linked folders) -->
                 <assembly.descriptor>src/main/assembly/bundle.dev.xml</assembly.descriptor>
+                <assembly.descriptor>src/main/assembly/bundle.prod.xml</assembly.descriptor>
             </properties>
 
             <build>

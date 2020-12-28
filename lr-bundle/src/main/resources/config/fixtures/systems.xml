@@ -21,8 +21,8 @@
         <constructor-arg name="lifespan" value="EXPERIMENT"/>
         <constructor-arg name="dependencies">
             <set value-type="org.peelframework.core.beans.system.System">
-                <ref bean="yarn-3.1.1"/>
                 <ref bean="hdfs-3.1.1"/>
+                <ref bean="yarn-3.1.1"/>
                 <ref bean="e2data-pdu-0.0.1"/>
             </set>
         </constructor-arg>
@@ -39,21 +39,21 @@
         </constructor-arg>
     </bean>
 
-    <!--************************************************************************
-    * Custom system beans
-    *************************************************************************-->
-
-    <bean id="e2data-yarn-3.1.1" class="org.peelframework.hadoop.beans.system.Yarn3">
-        <constructor-arg name="version" value="3.1.1" />
-        <constructor-arg name="configKey" value="hadoop-3" />
-        <constructor-arg name="lifespan" value="SUITE" />
+    <bean id="e2data-pdu-0.0.1" class="eu.e2data.benchmarks.cli.system.PduPowerConsumption">
+        <constructor-arg name="version" value="0.0.1" />
+        <constructor-arg name="configKey" value="pdu" />
+        <constructor-arg name="lifespan" value="RUN"/>
         <constructor-arg name="mc" ref="mc"/>
         <constructor-arg name="dependencies">
             <set value-type="org.peelframework.core.beans.system.System" />
         </constructor-arg>
     </bean>
 
-    <bean id="e2data-hdfs-3.1.1" class="org.peelframework.hadoop.beans.system.HDFS3">
+    <!--************************************************************************
+    * Custom system beans
+    *************************************************************************-->
+
+    <bean id="e2data-yarn-3.1.1" class="org.peelframework.hadoop.beans.system.Yarn3">
         <constructor-arg name="version" value="3.1.1" />
         <constructor-arg name="configKey" value="hadoop-3" />
         <constructor-arg name="lifespan" value="SUITE" />
@@ -78,43 +78,11 @@
         <constructor-arg name="lifespan" value="EXPERIMENT"/>
         <constructor-arg name="dependencies">
             <set value-type="org.peelframework.core.beans.system.System">
-                <ref bean="e2data-hdfs-3.1.1"/>
+                <ref bean="hdfs-3.1.1"/>
                 <ref bean="e2data-yarn-3.1.1"/>
+                <ref bean="e2data-pdu-0.0.1"/>
             </set>
         </constructor-arg>
-    </bean>
-
-    <!--************************************************************************
-    * Base experiments beans
-    *************************************************************************-->
-    <bean id="e2data-pdu-0.0.1" class="eu.e2data.benchmarks.cli.system.PduPowerConsumption">
-        <constructor-arg name="version" value="0.0.1" />
-        <constructor-arg name="configKey" value="pdu" />
-        <constructor-arg name="lifespan" value="RUN"/>
-        <constructor-arg name="mc" ref="mc"/>
-        <constructor-arg name="dependencies">
-            <set value-type="org.peelframework.core.beans.system.System" />
-        </constructor-arg>
-    </bean>
-
-    <bean id="experiment.flink-yarn-1.11.1" class="org.peelframework.flink.beans.experiment.FlinkExperiment" abstract="true">
-        <constructor-arg name="runner" ref="flink-yarn-1.11.1"/>
-        <constructor-arg name="runs" value="3"/>
-    </bean>
-
-    <bean id="experiment.flink-standalone-1.11.1" class="org.peelframework.flink.beans.experiment.FlinkExperiment" abstract="true">
-        <constructor-arg name="runner" ref="flink-1.11.1"/>
-        <constructor-arg name="runs" value="3"/>
-    </bean>
-
-    <bean id="experiment.e2data-flink-yarn-1.11.1" class="org.peelframework.flink.beans.experiment.FlinkExperiment" abstract="true">
-        <constructor-arg name="runner" ref="e2data-flink-yarn-1.11.1"/>
-        <constructor-arg name="runs" value="3"/>
-    </bean>
-
-    <bean id="experiment.e2data-flink-standalone-1.11.1" class="org.peelframework.flink.beans.experiment.FlinkExperiment" abstract="true">
-        <constructor-arg name="runner" ref="e2data-flink-1.11.1"/>
-        <constructor-arg name="runs" value="3"/>
     </bean>
 
 </beans>

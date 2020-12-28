@@ -6,17 +6,6 @@
 
 
     <!--************************************************************************
-    * Data Sets
-    *************************************************************************-->
-
-    <!-- 170000000 points = 2 GB text file
-         850000000 points => 10.7 GB text file => 36.4 GB read from Flink DataSource
-         825436396 points = 10 GB text file ?
-         33554432 points => 417M text file => 736 MB read from Flink DataSource => 3.28 GB processed in CHAIN Reduce => 15 minutes in one task slot
-    -->
-
-
-    <!--************************************************************************
     * Experiments
     *************************************************************************-->
 
@@ -75,7 +64,6 @@
     <!--************************************************************************
     * Suites
     *************************************************************************-->
-
 
     <!-- suite for local development and testing -->
     <bean id="lr.default" class="org.peelframework.core.beans.experiment.ExperimentSuite">
@@ -158,7 +146,7 @@
                 <constructor-arg name="prototypes">
                     <list value-type="org.peelframework.core.beans.experiment.Experiment">
                         <bean parent="experiment.lr">
-                            <constructor-arg name="name" value="gb.__topXXX-X__"/>
+                            <constructor-arg name="name" value="lr.__topXXX-X__"/>
                             <constructor-arg name="config">
                                 <value><![CDATA[
                                   system.default.config.slaves                           = ${env.scale-out.__topXXX-X__.workers}

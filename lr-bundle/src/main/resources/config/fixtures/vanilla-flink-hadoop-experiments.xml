@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--************************************************************************
+    * Base experiments beans
+    *************************************************************************-->
+
+    <bean id="experiment.flink-yarn-1.11.1" class="org.peelframework.flink.beans.experiment.FlinkExperiment" abstract="true">
+        <constructor-arg name="runner" ref="flink-yarn-1.11.1"/>
+        <constructor-arg name="runs" value="3"/>
+    </bean>
+
+    <bean id="experiment.flink-standalone-1.11.1" class="org.peelframework.flink.beans.experiment.FlinkExperiment" abstract="true">
+        <constructor-arg name="runner" ref="flink-1.11.1"/>
+        <constructor-arg name="runs" value="3"/>
+    </bean>
+
+</beans>

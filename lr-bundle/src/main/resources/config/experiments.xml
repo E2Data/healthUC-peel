@@ -20,6 +20,18 @@
     <!-- custom system beans -->
     <import resource="fixtures/systems.xml"/>
 
+    <!--
+         vanilla-flink-hadoop-experiments.xml uses the normal Flink and
+         Hadoop installations without E2Data modifications
+    -->
+    <import resource="fixtures/vanilla-flink-hadoop-experiments.xml"/>
+
+    <!--
+         d2data-flink-hadoop-experiments.xml uses the Flink and
+         Hadoop installations with E2Data modifications
+    <import resource="fixtures/e2data-flink-hadoop-experiments.xml"/>
+    -->
+
     <!-- experiment beans -->
     <import resource="fixtures/lr.xml"/>
 
